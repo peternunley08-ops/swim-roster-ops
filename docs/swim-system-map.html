@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LMUSD Swim — System Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Hanken+Grotesk:wght@400..700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --navy:#0B1320; --navy2:#0D1925; --ink:#0A1520;
+    --surface:rgba(255,255,255,.045); --surface2:rgba(255,255,255,.07);
+    --border:rgba(120,170,190,.20); --border2:rgba(120,170,190,.35);
+    --text:#E6EDF3; --muted:#9FB6C2; --faint:#7C94A2;
+    --teal:#2DD4BF; --teal-d:#5FBBD0; --navy-accent:#3E7CA8;
+    --gold:#E8A23C; --purple:#A99AFF; --red:#E2725B; --green:#19B6A0;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:'Hanken Grotesk',system-ui,sans-serif; color:var(--text);
+    background:
+      radial-gradient(1100px 700px at 12% -10%, rgba(232,162,60,.10), transparent 55%),
+      radial-gradient(1000px 800px at 100% 100%, rgba(45,212,191,.12), transparent 55%),
+      linear-gradient(180deg, var(--navy) 0%, var(--navy2) 55%, var(--ink) 100%);
+    background-attachment:fixed; min-height:100vh; padding:0 0 80px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px; margin:0 auto; padding:0 22px}
+  header.hero{padding:54px 22px 30px; max-width:1180px; margin:0 auto}
+  .kick{font-size:12.5px; letter-spacing:.22em; text-transform:uppercase; color:var(--gold); font-weight:700}
+  h1{font-family:'Bricolage Grotesque',sans-serif; font-weight:800; font-size:clamp(30px,5vw,52px); margin:8px 0 6px; line-height:1.04; letter-spacing:-.01em}
+  .sub{color:var(--muted); font-size:16px; max-width:640px; line-height:1.5}
+  .accent-line{height:3px;width:78px;border-radius:3px;background:linear-gradient(90deg,var(--gold),rgba(232,162,60,0));margin:18px 0 4px}
+
+  section{margin-top:46px}
+  .sec-head{display:flex; align-items:baseline; gap:12px; margin:0 0 18px; flex-wrap:wrap}
+  .sec-head .n{font-family:'Bricolage Grotesque',sans-serif; font-weight:800; font-size:14px; color:var(--ink);
+    background:linear-gradient(135deg,var(--teal),var(--teal-d)); width:30px;height:30px;border-radius:9px;
+    display:grid;place-items:center; flex:none; box-shadow:0 4px 14px rgba(45,212,191,.3)}
+  .sec-head h2{font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:clamp(20px,3vw,27px); margin:0; letter-spacing:-.01em}
+  .sec-head p{color:var(--muted); font-size:14px; margin:0; flex-basis:100%; padding-left:42px}
+
+  .flow{display:flex; align-items:stretch; gap:0; flex-wrap:wrap}
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px 18px;
+    backdrop-filter:blur(8px); box-shadow:0 8px 26px rgba(0,0,0,.22)}
+  .node{flex:1 1 200px; min-width:180px}
+  .node .t{font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:15.5px; margin:0 0 6px; display:flex; align-items:center; gap:8px}
+  .node .d{color:var(--muted); font-size:13px; line-height:1.45}
+  .arrow{flex:none; align-self:center; color:var(--teal-d); font-size:22px; padding:0 6px; opacity:.8}
+  .dot{width:9px;height:9px;border-radius:50%;flex:none;box-shadow:0 0 0 4px rgba(255,255,255,.04)}
+
+  .grid{display:grid; gap:14px}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:880px){.g3,.g4{grid-template-columns:repeat(2,1fr)} .sec-head p{padding-left:0}}
+  @media(max-width:560px){.g2,.g3,.g4{grid-template-columns:1fr} .arrow{transform:rotate(90deg); padding:4px 0}}
+
+  .tag{display:inline-block; font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+    padding:3px 9px; border-radius:999px; border:1px solid var(--border2)}
+  .tag.owner{color:var(--gold); border-color:rgba(232,162,60,.5); background:rgba(232,162,60,.10)}
+  .tag.inst{color:var(--teal-d); border-color:rgba(95,187,208,.5); background:rgba(45,212,191,.10)}
+  .tag.db{color:var(--purple); border-color:rgba(169,154,255,.45); background:rgba(169,154,255,.10)}
+
+  .blob{border:1px solid var(--border2); border-radius:18px; padding:20px; background:
+    linear-gradient(180deg, rgba(45,212,191,.06), rgba(255,255,255,.02));}
+  .blob > .lbl{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;color:var(--teal-d);
+    text-transform:uppercase;letter-spacing:.12em;margin:0 0 14px;display:flex;gap:8px;align-items:center}
+  .field{font-size:13px;line-height:1.5}
+  .field b{font-family:'Bricolage Grotesque',sans-serif;color:var(--text);font-weight:700}
+  .field span{color:var(--muted)}
+  .pill{display:inline-block;font-size:11.5px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);
+    border-radius:7px;padding:2px 8px;margin:3px 4px 0 0}
+
+  .sync-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+  .sync-row .b{flex:1 1 240px}
+  .legend{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:760px){.legend{grid-template-columns:1fr}}
+  .leg{border-radius:14px;padding:16px 18px;border:1px solid var(--border)}
+  .leg.ok{background:rgba(25,182,160,.07);border-color:rgba(25,182,160,.32)}
+  .leg.adj{background:rgba(232,162,60,.07);border-color:rgba(232,162,60,.32)}
+  .leg.watch{background:rgba(226,114,91,.07);border-color:rgba(226,114,91,.32)}
+  .leg h3{font-family:'Bricolage Grotesque',sans-serif;margin:0 0 4px;font-size:15px;display:flex;gap:8px;align-items:center}
+  .leg.ok h3{color:var(--green)} .leg.adj h3{color:var(--gold)} .leg.watch h3{color:var(--red)}
+  .leg ul{margin:8px 0 0;padding-left:0;list-style:none}
+  .leg li{font-size:13px;color:var(--muted);line-height:1.5;padding:3px 0 3px 18px;position:relative}
+  .leg li::before{content:"";position:absolute;left:0;top:9px;width:7px;height:7px;border-radius:50%}
+  .leg.ok li::before{background:var(--green)} .leg.adj li::before{background:var(--gold)} .leg.watch li::before{background:var(--red)}
+  footer{max-width:1180px;margin:54px auto 0;padding:22px;color:var(--faint);font-size:12.5px;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="kick">LMUSD · Summer Swim 2026</div>
+  <h1>How the Swim Roster system works</h1>
+  <div class="accent-line"></div>
+  <p class="sub">A map of logins, the data, how everything stays in sync across devices, and what's live vs. worth keeping an eye on. Open this anytime for the big picture.</p>
+</header>
+
+<div class="wrap">
+
+  <section>
+    <div class="sec-head"><span class="n">1</span><h2>How people sign in</h2>
+      <p>Real accounts, real security. Who you are decides what you can do — enforced by the database, not just the screen.</p></div>
+    <div class="flow">
+      <div class="card node"><div class="t"><span class="dot" style="background:var(--teal)"></span>Open the app</div>
+        <div class="d">Installable web app (add to home screen). Loads instantly, works offline once cached.</div></div>
+      <div class="arrow">&rarr;</div>
+      <div class="card node"><div class="t"><span class="dot" style="background:var(--gold)"></span>Sign in</div>
+        <div class="d">Email + password via <b>Supabase Auth</b>. No public sign-ups — only an owner creates accounts.</div></div>
+      <div class="arrow">&rarr;</div>
+      <div class="card node"><div class="t"><span class="dot" style="background:var(--purple)"></span>Role check</div>
+        <div class="d">Your profile says <b>owner</b> or <b>instructor</b>. <b>Row-Level Security</b> enforces it server-side.</div></div>
+      <div class="arrow">&rarr;</div>
+      <div class="card node"><div class="t">What you can do</div>
+        <div class="d"><span class="tag owner">Owner</span> edit everything, manage staff &amp; accounts.<br><br><span class="tag inst">Instructor</span> view rosters, take attendance, request trades.</div></div>
+    </div>
+    <div class="card" style="margin-top:14px;border-color:var(--border2)">
+      <div class="field"><b>Account creation is owner-only and server-side.</b> <span>Adding/deleting an account runs through a secured Supabase Edge Function (<code>bright-api</code>) using a service key the browser never sees. Public sign-up stays OFF, so no stranger can register and read student info.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">2</span><h2>The data — one source of truth</h2>
+      <p>Everything lives in one owner-owned record (the "roster blob"), plus a small per-instructor record for their own marks.</p></div>
+    <div class="grid g2">
+      <div class="blob">
+        <div class="lbl">&#9670; Roster blob &nbsp;<span style="color:var(--faint);font-weight:400;letter-spacing:0;text-transform:none">— owner writes</span></div>
+        <div class="field" style="margin-bottom:10px"><b>weeks</b> <span>— per week: the roster (students: name, level, time, guardian, age, balance), instructor assignments, and attendance.</span></div>
+        <div class="field" style="margin-bottom:10px"><b>freeSwim</b> <span>— lifeguard pool, who's on duty, stations &amp; the rotation (auto or manual placement).</span></div>
+        <div class="field" style="margin-bottom:10px"><b>staff</b> <span>— each person's role (instructor / lifeguard / both), extra non-login people, and daily who's-here.</span></div>
+        <div class="field" style="margin-bottom:10px"><b>accounts</b> <span>— the logins + their display names.</span></div>
+        <div class="field"><b>switchRequests</b> <span>— trade / pick-up / drop requests awaiting owner approval.</span></div>
+      </div>
+      <div class="blob" style="background:linear-gradient(180deg,rgba(169,154,255,.06),rgba(255,255,255,.02));border-color:rgba(169,154,255,.3)">
+        <div class="lbl" style="color:var(--purple)">&#9670; Instructor record &nbsp;<span style="color:var(--faint);font-weight:400;letter-spacing:0;text-transform:none">— each instructor writes only their own</span></div>
+        <div class="field" style="margin-bottom:10px"><b>attendance</b> <span>— the present/absent marks that instructor took.</span></div>
+        <div class="field"><b>requests</b> <span>— the trades / pick-ups / drops they submitted.</span></div>
+        <div class="field" style="margin-top:14px;color:var(--muted)"><span>RLS makes this physically impossible to forge — an instructor can't write the roster blob or anyone else's record.</span></div>
+        <div style="margin-top:14px">
+          <span class="pill">name links by spelling</span>
+          <span class="pill">no schema changes needed</span>
+          <span class="pill">offline cache + retry</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">3</span><h2>The shared name layer &nbsp;<span class="tag" style="color:var(--green);border-color:rgba(25,182,160,.5);background:rgba(25,182,160,.1)">new</span></h2>
+      <p>One unified list of people that every screen reads from — so names finally flow consistently everywhere.</p></div>
+    <div class="grid g3">
+      <div class="card"><div class="t" style="font-family:'Bricolage Grotesque';font-weight:700;margin-bottom:8px">One people list</div>
+        <div class="d" style="color:var(--muted);font-size:13px;line-height:1.5">Accounts + lifeguards + lesson instructors + added staff, merged &amp; de-duplicated into a single roster of people, each with a role.</div></div>
+      <div class="card"><div class="t" style="font-family:'Bricolage Grotesque';font-weight:700;margin-bottom:8px">Roles drive coverage</div>
+        <div class="d" style="color:var(--muted);font-size:13px;line-height:1.5">Tag someone <b style="color:var(--teal-d)">lifeguard</b> or <b style="color:var(--teal-d)">both</b> &rarr; they automatically appear in the free-swim "on duty today" list. No double entry.</div></div>
+      <div class="card"><div class="t" style="font-family:'Bricolage Grotesque';font-weight:700;margin-bottom:8px">Rename once, everywhere</div>
+        <div class="d" style="color:var(--muted);font-size:13px;line-height:1.5">Renaming a person updates their lessons, free-swim slots, staff role, and attendance in one move — no orphaned old names.</div></div>
+    </div>
+    <div class="card" style="margin-top:14px;border-color:var(--border2)">
+      <div class="field"><b>Each person's full picture on their account.</b> <span>Open an account and you see both their <b style="color:var(--teal-d)">lessons</b> and their <b style="color:var(--gold)">free-swim shifts</b> — the same way lessons already showed.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">4</span><h2>How everything stays in sync</h2>
+      <p>Edits flow to the cloud and back to every device — safely, without clobbering each other.</p></div>
+    <div class="sync-row">
+      <div class="card b"><div class="t" style="font-family:'Bricolage Grotesque';font-weight:700">You edit (owner)</div>
+        <div class="d" style="color:var(--muted);font-size:13px">Change shows instantly, then saves with a <b>safe-write check</b> (compare-and-set). If another device saved first, it reloads the newer copy and tells you — never silently overwrites.</div></div>
+      <div class="arrow">&rarr;</div>
+      <div class="card b"><div class="t" style="font-family:'Bricolage Grotesque';font-weight:700">Cloud (Supabase)</div>
+        <div class="d" style="color:var(--muted);font-size:13px">The roster blob + each instructor's record live here, guarded by Row-Level Security.</div></div>
+      <div class="arrow">&rarr;</div>
+      <div class="card b"><div class="t" style="font-family:'Bricolage Grotesque';font-weight:700">Everyone refreshes</div>
+        <div class="d" style="color:var(--muted);font-size:13px">A background poll (~15s) merges everyone's latest — instructor attendance flows to you, your roster flows to them — while protecting edits you're mid-typing.</div></div>
+    </div>
+    <div class="card" style="border-color:var(--border2)">
+      <div class="field"><b>No signal? No problem.</b> <span>The last roster is cached on the device so it still opens poolside, and any save made offline retries automatically when you're back online.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">5</span><h2>What each screen shows</h2>
+      <p>Richer dashboards built from that one shared people + roster data.</p></div>
+    <div class="grid g4">
+      <div class="card"><div class="t" style="font-family:'Bricolage Grotesque';font-weight:700;margin-bottom:6px">Owner Dashboard <span class="tag owner" style="margin-left:4px">admin</span></div>
+        <div class="d" style="color:var(--muted);font-size:12.5px;line-height:1.5">Live "right now", coverage alerts, who's-on-what per person, attendance at a glance.</div></div>
+      <div class="card"><div class="t" style="font-family:'Bricolage Grotesque';font-weight:700;margin-bottom:6px">My Day <span class="tag inst" style="margin-left:4px">instructor</span></div>
+        <div class="d" style="color:var(--muted);font-size:12.5px;line-height:1.5">Today's lessons + attendance progress, your free-swim duty &amp; station, your requests.</div></div>
+      <div class="card"><div class="t" style="font-family:'Bricolage Grotesque';font-weight:700;margin-bottom:6px">Day / Rosters</div>
+        <div class="d" style="color:var(--muted);font-size:12.5px;line-height:1.5">Class-by-class lists, take attendance, add/move swimmers, print &amp; export.</div></div>
+      <div class="card"><div class="t" style="font-family:'Bricolage Grotesque';font-weight:700;margin-bottom:6px">Free Swim</div>
+        <div class="d" style="color:var(--muted);font-size:12.5px;line-height:1.5">Lifeguard rotation board — who's on duty &amp; where, auto or manual placement.</div></div>
+      <div class="card"><div class="t" style="font-family:'Bricolage Grotesque';font-weight:700;margin-bottom:6px">Today / Staff</div>
+        <div class="d" style="color:var(--muted);font-size:12.5px;line-height:1.5">Daily staff check-in, no-show &rarr; find a replacement, role management (admin only).</div></div>
+      <div class="card"><div class="t" style="font-family:'Bricolage Grotesque';font-weight:700;margin-bottom:6px">Shifts</div>
+        <div class="d" style="color:var(--muted);font-size:12.5px;line-height:1.5">Every class this week &amp; who teaches it — instructors tap to propose trades.</div></div>
+      <div class="card"><div class="t" style="font-family:'Bricolage Grotesque';font-weight:700;margin-bottom:6px">Accounts <span class="tag owner" style="margin-left:4px">admin</span></div>
+        <div class="d" style="color:var(--muted);font-size:12.5px;line-height:1.5">Create / rename / disable / delete logins; see each person's lessons + shifts.</div></div>
+      <div class="card"><div class="t" style="font-family:'Bricolage Grotesque';font-weight:700;margin-bottom:6px">Requests</div>
+        <div class="d" style="color:var(--muted);font-size:12.5px;line-height:1.5">Owner approves/declines trades; applies the change to the week instantly.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">6</span><h2>System status</h2>
+      <p>What's live and working, what you adjust day-to-day, and what's worth a glance.</p></div>
+    <div class="legend">
+      <div class="leg ok"><h3>&#10003; Live &amp; working</h3>
+        <ul>
+          <li>Real logins + server-side security (RLS)</li>
+          <li>Owner-only account create / delete</li>
+          <li>Attendance + free-swim rotation</li>
+          <li>Shared name layer &amp; rename sync</li>
+          <li>Richer admin + instructor dashboards</li>
+          <li>Dark mode (brighter, readable colors)</li>
+          <li>Installable app + offline cache</li>
+        </ul></div>
+      <div class="leg adj"><h3>&#9881; You adjust day-to-day</h3>
+        <ul>
+          <li>Staff roles (instructor / lifeguard / both)</li>
+          <li>Who's on duty &amp; the rotation</li>
+          <li>Daily staff check-in &amp; replacements</li>
+          <li>Rosters, classes, the active day/week</li>
+          <li>Approving trade requests</li>
+        </ul></div>
+      <div class="leg watch"><h3>&#9888; Keep an eye on</h3>
+        <ul>
+          <li>Rename a person &rarr; confirm it updated everywhere</li>
+          <li>Clean any duplicate accounts (old retries)</li>
+          <li>Keep the Edge Function's "Verify JWT" OFF</li>
+          <li>Deploy = drag the zip, wait for "Published"</li>
+          <li>Review new dashboards on a phone</li>
+        </ul></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  LMUSD Summer Swim 2026 — internal system map. Generated to give a clear, at-a-glance view of how the roster app fits together. Open this file in any browser.
+</footer>
+
+</body>
+</html>
