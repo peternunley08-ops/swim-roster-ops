@@ -62,5 +62,6 @@ function devFunctions() {
 }
 
 export default defineConfig({
+  base: "./",
   plugins: [react(), devFunctions()],
 });
