@@ -1,5 +1,9 @@
 # 🏊‍♂️ DeckHand — Swim Roster & Lifeguard Sync
 
+[![CI](https://github.com/peternunley08-ops/swim-roster-ops/actions/workflows/ci.yml/badge.svg)](https://github.com/peternunley08-ops/swim-roster-ops/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-13_passed-2DD4BF)](./src/sync.test.mjs)
+[![Live Product Page](https://img.shields.io/badge/demo-live_product_page-E8A23C)](https://peternunley08-ops.github.io/swim-roster-ops/docs/swim-ops-landing.html)
+
 A real-time roster, attendance, instructor assignment, and AI photo-import web application built for aquatics programs and poolside operations.
 
 Organizes swimmers by time slot (`10am`–`2pm`) and skill level (`Level 1`–`Level 6`), tracks live attendance across multiple instructors' phones simultaneously, and imports printed/handwritten roster sheets using **Claude Vision**.
